@@ -1,6 +1,6 @@
-'''
+"""
 visualizer.py - Visualization module
-'''
+"""
 
 import matplotlib.pyplot as plt
 
