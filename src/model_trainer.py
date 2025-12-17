@@ -1,4 +1,9 @@
-"""Model training module for music genre preference prediction. This module contains the ModelTrainer class for building and training neural network models."""
+"""
+Model training module for music genre preference prediction.
+
+This module contains the ModelTrainer class for building and training
+neural network models.
+"""
 
 import os
 import numpy as np
@@ -9,20 +14,24 @@ from typing import Tuple, Optional, Dict
 
 
 class ModelTrainer:
-    """ Handles neural network model creation and training.
+    """
+    Handles neural network model creation and training.
     
     Attributes:
         input_dim (int): Number of input features
         output_dim (int): Number of output classes (genres)
         model (tf.keras.Model): The neural network model
-        history: Training history object """
+        history: Training history object
+    """
     
     def __init__(self, input_dim: int, output_dim: int):
-        """ Initializes ModelTrainer.
+        """
+        Initialize ModelTrainer.
         
         Args:
             input_dim: Number of input features
-            output_dim: Number of output classes """
+            output_dim: Number of output classes
+        """
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.model = None
@@ -30,23 +39,29 @@ class ModelTrainer:
     
     def build_model(self, hidden_layers: list = [256, 128, 64],
                    dropout_rates: list = [0.3, 0.2, 0.1]) -> None:
-        """ Builds a multi-layer neural network for multi-label classification.
+        """
+        Build a multi-layer neural network for multi-label classification.
         
         Args:
             hidden_layers: List of hidden layer sizes
-            dropout_rates: List of dropout rates for each layer """
-        inp = layers.Input(shape=(self.input_dim,), name='input_layer') # input layer
+            dropout_rates: List of dropout rates for each layer
+        """
+        # Input layer
+        inp = layers.Input(shape=(self.input_dim,), name='input_layer')
         x = inp
         
-        for i, (units, dropout) in enumerate(zip(hidden_layers, dropout_rates)):  # hidden layers with dropout using enumerate
+        # Hidden layers with dropout using enumerate
+        for i, (units, dropout) in enumerate(zip(hidden_layers, dropout_rates)):
             x = layers.Dense(units, activation='relu', 
                            name=f'hidden_{i+1}')(x)
             x = layers.Dropout(dropout, name=f'dropout_{i+1}')(x)
         
+        # Output layer (sigmoid for multi-label)
         out = layers.Dense(self.output_dim, activation='sigmoid',
-                          name='output_layer')(x)  # output layer (sigmoid for multi-label)
+                          name='output_layer')(x)
         
-        self.model = models.Model(inputs=inp, outputs=out, name='genre_predictor')  # creates and compiles model
+        # Create and compile model
+        self.model = models.Model(inputs=inp, outputs=out, name='genre_predictor')
         self.model.compile(
             optimizer='adam',
             loss='binary_crossentropy',
@@ -64,7 +79,8 @@ class ModelTrainer:
              batch_size: int = 64,
              model_save_path: str = 'models/multilabel_model.h5',
              random_state: int = 42) -> Dict:
-        """ Trains the model with train/validation/test split.
+        """
+        Train the model with train/validation/test split.
         
         Args:
             X: Feature matrix
@@ -77,15 +93,18 @@ class ModelTrainer:
             random_state: Random seed for reproducibility
             
         Returns:
-            Dictionary with train/val/test data splits """
+            Dictionary with train/val/test data splits
+        """
         if self.model is None:
             raise ValueError("Model not built. Call build_model() first.")
         
-        X_train, X_temp, y_train, y_temp = train_test_split( # splits data: train + temp
+        # Split data: train + temp
+        X_train, X_temp, y_train, y_temp = train_test_split(
             X, Y, test_size=test_size, random_state=random_state
         )
         
-        X_val, X_test, y_val, y_test = train_test_split( # splits temp: val + test
+        # Split temp: val + test
+        X_val, X_test, y_val, y_test = train_test_split(
             X_temp, y_temp, test_size=val_size, random_state=random_state
         )
         
@@ -93,7 +112,7 @@ class ModelTrainer:
         print(f"Validation shape: {X_val.shape}")
         print(f"Test shape: {X_test.shape}")
         
-        # ensures float32 dtype
+        # Ensure float32 dtype
         X_train = X_train.astype(np.float32)
         X_val = X_val.astype(np.float32)
         X_test = X_test.astype(np.float32)
@@ -101,7 +120,8 @@ class ModelTrainer:
         y_val = y_val.astype(np.float32)
         y_test = y_test.astype(np.float32)
         
-        os.makedirs(os.path.dirname(model_save_path), exist_ok=True)  # creates callbacks
+        # Create callbacks
+        os.makedirs(os.path.dirname(model_save_path), exist_ok=True)
         
         early_stop = callbacks.EarlyStopping(
             monitor='val_loss',
@@ -118,7 +138,7 @@ class ModelTrainer:
             verbose=1
         )
         
-        # trains model
+        # Train model
         print("\nStarting training...")
         self.history = self.model.fit(
             X_train, y_train,
@@ -136,24 +156,26 @@ class ModelTrainer:
             'X_val': X_val, 'y_val': y_val,
             'X_test': X_test, 'y_test': y_test
         }
-
+    
     def evaluate(self, X_test: np.ndarray, y_test: np.ndarray) -> Dict[str, float]:
-        """ Evaluates model on test set.
+        """
+        Evaluate model on test set.
         
         Args:
             X_test: Test features
             y_test: Test labels
             
         Returns:
-            Dictionary of evaluation metrics """
+            Dictionary of evaluation metrics
+        """
         if self.model is None:
             raise ValueError("Model not trained yet.")
         
-        # gets predictions
+        # Get predictions
         y_prob = self.model.predict(X_test)
         y_pred = (y_prob >= 0.5).astype(int)
         
-        # calculates metrics
+        # Calculate metrics
         from sklearn.metrics import hamming_loss, f1_score
         
         metrics = {
@@ -169,7 +191,7 @@ class ModelTrainer:
         return metrics
     
     def summary(self) -> None:
-        """ Prints model summary """
+        """Print model summary."""
         if self.model is None:
             print("Model not built yet.")
         else:
@@ -177,31 +199,35 @@ class ModelTrainer:
     
     @staticmethod
     def load_model(model_path: str) -> tf.keras.Model:
-        """ Loads a saved model from file.
+        """
+        Load a saved model from file.
         
         Args:
             model_path: Path to saved model
             
         Returns:
-            Loaded Keras model """
+            Loaded Keras model
+        """
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model file not found: {model_path}")
         
         return tf.keras.models.load_model(model_path)
     
     def __str__(self) -> str:
-        """ String representation """
+        """String representation."""
         return (f"ModelTrainer(input_dim={self.input_dim}, "
                 f"output_dim={self.output_dim}, "
                 f"model_built={self.model is not None})")
     
     def __repr__(self) -> str:
-        """ Official string representation """
+        """Official string representation."""
         return self.__str__()
 
 
-def calculate_top_k_accuracy(y_true: np.ndarray, y_prob: np.ndarray, k: int = 3) -> float:
-    """ Calculates top-k accuracy for multi-label classification.
+def calculate_top_k_accuracy(y_true: np.ndarray, y_prob: np.ndarray, 
+                            k: int = 3) -> float:
+    """
+    Calculate top-k accuracy for multi-label classification.
     
     Args:
         y_true: True labels (binary matrix)
@@ -209,19 +235,20 @@ def calculate_top_k_accuracy(y_true: np.ndarray, y_prob: np.ndarray, k: int = 3)
         k: Number of top predictions to consider
         
     Returns:
-        Top-k accuracy score """
+        Top-k accuracy score
+    """
     hits = 0
     
-    # uses while loop for iteration
+    # Use while loop for iteration
     i = 0
     while i < y_true.shape[0]:
-        # gets top-k predicted indices
+        # Get top-k predicted indices
         topk_idx = np.argsort(y_prob[i])[-k:][::-1]
         
-        # gets true label indices
+        # Get true label indices
         true_idx = set(np.where(y_true[i] == 1)[0])
         
-        # checks if any top-k prediction is correct
+        # Check if any top-k prediction is correct
         if len(true_idx.intersection(topk_idx)) > 0:
             hits += 1
         
@@ -231,9 +258,10 @@ def calculate_top_k_accuracy(y_true: np.ndarray, y_prob: np.ndarray, k: int = 3)
 
 
 if __name__ == "__main__":
-    print("ModelTrainer module loaded")  #example
+    # Example usage
+    print("ModelTrainer module loaded")
     
-    # creates dummy data for testing
+    # Create dummy data for testing
     X_dummy = np.random.rand(100, 20).astype(np.float32)
     Y_dummy = np.random.randint(0, 2, size=(100, 10)).astype(np.float32)
     
