@@ -37,37 +37,16 @@ AAI-551-Final-Project/
 │
 ├── data/ # Data storage
 │ ├── raw/ # Original downloaded data files
-│ │ ├── user_artists.dat # User-artist listening counts
-│ │ ├── user_profiles.dat # User demographic information
-│ │ ├── artists.dat # Artist metadata
-│ │ ├── user_taggedartists.dat # User-applied artist tags
-│ │ └── tags.dat # Tag definitions
-│ │
+│ │ ├── user_profiles.tsv # User information
 │ └── processed/ # Processed datasets
-│ ├── features.npy # Preprocessed feature matrix
-│ ├── labels.npy # Genre label matrix
-│ └── genre_classes.npy # Genre class names
 │
-├── models/ # Trained model storage
-│ ├── multilabel_model.h5 # Primary trained model
-│ └── best_enhanced_model.h5 # Enhanced model with callbacks
+├── tests/ # Jupyter notebooks
+│ ├── __init__.py
+│ ├── test_data_processor # Test data processor class
+│ └── test_predictor # Test predictor class
 │
-├── artifacts/ # Model artifacts and encoders
-│ ├── scaler.pkl # Feature scaler
-│ ├── label_encoder.pkl # Label encoder
-│ ├── feature_columns.pkl # Feature column names
-│ └── genre_classes.pkl # Genre class mapping
-│
-├── notebooks/ # Jupyter notebooks
-│ └── main.ipynb # Main pipeline notebook
-│
-├── logs/ # Training logs
-│ └── enhanced_model/ # TensorBoard logs
-│
-├── main.py # Command-line interface
-├── get_data.py # Data download script
+├── main.ipynb # Main notebook of program
 ├── requirements.txt # Python dependencies
-├── config.yaml # Configuration file
 └── README.md # This file
 ```
 
