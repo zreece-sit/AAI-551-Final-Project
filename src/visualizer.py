@@ -127,5 +127,3 @@ class Visualizer:
 
 if __name__ == "__main__":
     print("Predictor and Visualizer modules loaded")
-predictor_visualizer.py
-Displaying predictor_visualizer.py.
