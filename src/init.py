@@ -1,8 +1,4 @@
-"""
-Music Preference Predictor Package
-This package provides tools for predicting music genre preferences
-based on user demographics.
-"""
+""" Music Preference Predictor Package: Provides tools for predicting music genre preferences based on user demographics. """
 
 __version__ = "1.0.0"
 
