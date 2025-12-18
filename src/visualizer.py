@@ -1,46 +1,26 @@
-"""
-visualizer.py - Visualization module
-"""
+""" visualizer.py - Visualization module """
 
 import matplotlib.pyplot as plt
 from typing import Dict, Tuple
 import tensorflow as tf
 
 class Visualizer:
-    """
-    Creates visualizations for music preference predictions.
-    
-    Attributes:
-        predictor: MusicPredictor instance for making predictions
-    """
+    """ Creates visualizations for music preference predictions """
     
     def __init__(self, predictor: 'MusicPredictor'):
-        """
-        Initialize Visualizer with a predictor.
-        
-        Args:
-            predictor: MusicPredictor instance
-        """
-        self.predictor = predictor
+        """ Initializes Visualizer with a predictor """
+        self.predictor = predictor  # MusicPredictor instance for making predictions
     
-    def plot_top_k_predictions(self, user_dict: Dict, k: int = 5,
-                              figsize: Tuple[int, int] = (10, 6)) -> None:
-        """
-        Plot horizontal bar chart of top-K predictions.
+    def plot_top_k_predictions(self, user_dict: Dict, k: int = 5, figsize: Tuple[int, int] = (10, 6)) -> None:
+        """ Plots horizontal bar chart of top-K predictions """
         
-        Args:
-            user_dict: User demographics dictionary
-            k: Number of top genres to show
-            figsize: Figure size (width, height)
-        """
-        # Get predictions
-        predictions = self.predictor.predict(user_dict, top_k=k, threshold=0.0)
+        predictions = self.predictor.predict(user_dict, top_k=k, threshold=0.0)  # gets predictions
         
-        # Extract genres and probabilities
+        # extracts genres and probabilities
         genres = [genre for genre, _ in predictions]
         probs = [prob for _, prob in predictions]
         
-        # Create plot
+        # creates plot
         plt.figure(figsize=figsize)
         plt.barh(genres[::-1], probs[::-1], color='skyblue', edgecolor='navy')
         plt.xlim(0, 1)
@@ -49,7 +29,7 @@ class Visualizer:
         plt.title(f'Top-{k} Genre Predictions for User', fontsize=14, fontweight='bold')
         plt.grid(axis='x', alpha=0.3)
         
-        # Add probability labels
+        # adds probability labels
         for i, (genre, prob) in enumerate(zip(genres[::-1], probs[::-1])):
             plt.text(prob + 0.02, i, f'{prob:.3f}', 
                     va='center', fontsize=10)
@@ -57,24 +37,17 @@ class Visualizer:
         plt.tight_layout()
         plt.show()
     
-    def plot_all_genres(self, user_dict: Dict,
-                       figsize: Tuple[int, int] = (12, 8)) -> None:
-        """
-        Plot probabilities for all genres.
+    def plot_all_genres(self, user_dict: Dict, figsize: Tuple[int, int] = (12, 8)) -> None:
+        """ Plots probabilities for all genres """
         
-        Args:
-            user_dict: User demographics dictionary
-            figsize: Figure size
-        """
-        # Get all probabilities
-        all_probs = self.predictor.predict_all_probs(user_dict)
+        all_probs = self.predictor.predict_all_probs(user_dict)  # gets all probabilities
         
-        # Sort by probability
+        # sorts by probability
         sorted_items = sorted(all_probs.items(), key=lambda x: x[1], reverse=True)
         genres = [item[0] for item in sorted_items]
         probs = [item[1] for item in sorted_items]
         
-        # Create plot
+        # create plots
         plt.figure(figsize=figsize)
         colors = ['green' if p > 0.5 else 'orange' if p > 0.3 else 'red' 
                  for p in probs]
@@ -89,18 +62,12 @@ class Visualizer:
         plt.tight_layout()
         plt.show()
     
-    def plot_training_history(self, history: tf.keras.callbacks.History,
-                             figsize: Tuple[int, int] = (12, 5)) -> None:
-        """
-        Plot training history (loss and accuracy).
+    def plot_training_history(self, history: tf.keras.callbacks.History, figsize: Tuple[int, int] = (12, 5)) -> None:
+        """ Plots training history (loss and accuracy) """
         
-        Args:
-            history: Keras History object
-            figsize: Figure size
-        """
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
         
-        # Plot loss
+        # plots loss
         ax1.plot(history.history['loss'], label='Train Loss', linewidth=2)
         ax1.plot(history.history['val_loss'], label='Val Loss', linewidth=2)
         ax1.set_xlabel('Epoch')
@@ -109,7 +76,7 @@ class Visualizer:
         ax1.legend()
         ax1.grid(alpha=0.3)
         
-        # Plot accuracy
+        # plots accuracy
         ax2.plot(history.history['accuracy'], label='Train Accuracy', linewidth=2)
         ax2.plot(history.history['val_accuracy'], label='Val Accuracy', linewidth=2)
         ax2.set_xlabel('Epoch')
@@ -122,7 +89,7 @@ class Visualizer:
         plt.show()
     
     def __str__(self) -> str:
-        """String representation."""
+        """ String representation"""
         return f"Visualizer(predictor={self.predictor})"
 
 
