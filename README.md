@@ -24,6 +24,10 @@ This project predicts a user's music genre preferences based on demographic info
 4. **predictor.py**: `MusicPredictor` class - Makes predictions for new users
 5. **visualizer.py**: `Visualizer` class - Creates charts and visualizations
 
+### Main Notebook
+- **main.ipynb**: Jupyter notebook that orchestrates the entire pipeline
+
+### Full Structure
 ```
 AAI-551-Final-Project/
 │
@@ -49,9 +53,6 @@ AAI-551-Final-Project/
 ├── requirements.txt # Python dependencies
 └── README.md # This file
 ```
-
-### Main Notebook
-- **main.ipynb**: Jupyter notebook that orchestrates the entire pipeline
 
 ## How to Use
 1. Open `main.ipynb` in Jupyter Notebook or Google Colab
