@@ -61,23 +61,23 @@ predictions = predictor.predict(new_user, top_k=5)
 ## Requirements Met
 
 ### Part 1 Requirements
-Two classes with inheritance/composition relationships
-Multiple well-defined functions
-Advanced libraries: TensorFlow/Keras, Pandas, NumPy, Scikit-learn
-Exception handling with try-except blocks
-Pytest test cases
-Data I/O (file reading/writing)
-Loops: for, while, if statements
-Docstrings and comments
+- Two classes with inheritance/composition relationships
+- Multiple well-defined functions
+- Advanced libraries: TensorFlow/Keras, Pandas, NumPy, Scikit-learn
+- Exception handling with try-except blocks
+- Pytest test cases
+- Data I/O (file reading/writing)
+- Loops: for, while, if statements
+- Docstrings and comments
 
 ### Part 2 Requirements (4+ of 8)
-Lambda functions & filter
-List comprehension
-Built-in modules (os, urllib)
-Mutable/immutable objects
-Operator overloading (__str__, __repr__)
-Generator expressions
-__name__ == "__main__"
+- Lambda functions & filter
+- List comprehension
+- Built-in modules (os, urllib)
+- Mutable/immutable objects
+- Operator overloading (__str__, __repr__)
+- Generator expressions
+- __name__ == "__main__"
 
 ## Dependencies
 - Python 3.12+
