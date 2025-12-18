@@ -186,7 +186,7 @@ class DataProcessor(DataLoader):
         demographics_df = demographics_df.copy()
         
         # Handle different possible ID column names
-        id_cols = ['userid', 'userID', 'id', 'user_id']
+        id_cols = ['userid', 'userID', '#id', 'user_id']
         id_col = next((col for col in id_cols if col in demographics_df.columns), None)
         
         if id_col is None:
