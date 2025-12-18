@@ -75,7 +75,7 @@ class ModelTrainer:
     def train(self, X: np.ndarray, Y: np.ndarray,
              test_size: float = 0.3,
              val_size: float = 0.5,
-             epochs: int = 50,
+             epochs: int = 100,
              batch_size: int = 64,
              model_save_path: str = 'models/multilabel_model.h5',
              random_state: int = 42) -> Dict:
@@ -123,12 +123,12 @@ class ModelTrainer:
         # Create callbacks
         os.makedirs(os.path.dirname(model_save_path), exist_ok=True)
         
-        early_stop = callbacks.EarlyStopping(
-            monitor='val_loss',
-            patience=10,
-            restore_best_weights=True,
-            verbose=1
-        )
+        # early_stop = callbacks.EarlyStopping(
+        #     monitor='val_loss',
+        #     patience=10,
+        #     restore_best_weights=True,
+        #     verbose=1
+        # )
         
         model_checkpoint = callbacks.ModelCheckpoint(
             model_save_path,
