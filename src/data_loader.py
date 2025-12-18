@@ -1,7 +1,4 @@
-"""
-Data loading module for Last.fm dataset.
-This module handles downloading and initial loading of the Last.fm dataset.
-"""
+""" Data loading module for Last.fm dataset. Handles downloading and initial loading of the Last.fm dataset. """
 
 import os
 import urllib.request
@@ -11,34 +8,20 @@ from typing import Tuple, Optional
 
 
 class DataLoader:
-    """
-    Handles downloading and loading of Last.fm music dataset.
-    Attributes:
-        raw_dir (str): Directory path for raw data storage
-        url (str): URL to download the dataset from
-    """
+    """ Handles downloading and loading of Last.fm music dataset """
     
     def __init__(self, raw_dir: str = "data/raw/"):
-        """
-        Initialize DataLoader with directory path.
-        Args:
-            raw_dir (str): Directory to store raw data files
-        """
-        self.raw_dir = raw_dir
-        self.url = "http://files.grouplens.org/datasets/hetrec2011/hetrec2011-lastfm-2k.zip"
+        """ Initializes DataLoader with directory path """
+        self.raw_dir = raw_dir  # directory path for raw data storage
+        self.url = "http://files.grouplens.org/datasets/hetrec2011/hetrec2011-lastfm-2k.zip"  # URL to download dataset from
         os.makedirs(self.raw_dir, exist_ok=True)
     
     def download_dataset(self) -> bool:
-        """
-        Download the Last.fm dataset if not already present.
-        Returns:
-            bool: True if download successful or file exists, False otherwise
-        Raises:
-            urllib.error.URLError: If download fails
-        """
+        """ Downloads Last.fm dataset if not already present """
+        
         zip_path = os.path.join(self.raw_dir, "lastfm.zip")
         
-        # Check if file already exists
+        # checks if file already exists
         if os.path.exists(zip_path):
             print("Dataset already downloaded.")
             return True
@@ -52,12 +35,8 @@ class DataLoader:
             raise
     
     def extract_dataset(self) -> None:
-        """
-        Extract the downloaded zip file.
-        Raises:
-            FileNotFoundError: If zip file doesn't exist
-            zipfile.BadZipFile: If zip file is corrupted
-        """
+        """ Extracts downloaded zip file"""
+        
         zip_path = os.path.join(self.raw_dir, "lastfm.zip")
         if not os.path.exists(zip_path):
             raise FileNotFoundError(f"Zip file not found at {zip_path}")
@@ -71,34 +50,23 @@ class DataLoader:
             raise
     
     def load_raw_data(self) -> Tuple[pd.DataFrame, ...]:
-        """
-        Load all raw data files into pandas DataFrames.
-        Returns:
-            Tuple containing:
-                - user_artists (pd.DataFrame): User listening data
-                - demographics (pd.DataFrame): User demographic information
-                - artists (pd.DataFrame): Artist information
-                - user_tags (pd.DataFrame): User tagging data
-                - tags (pd.DataFrame): Tag definitions
-        Raises:
-            FileNotFoundError: If required data files are missing
-        """
+        """ Loads all raw data files into pandas DataFrames """
+        
         try:
-            # Define file paths
+            # defines file paths
             files = {
-                'user_artists': 'user_artists.dat',
-                'demographics': 'user_profiles.tsv',
-                'artists': 'artists.dat',
-                'user_tags': 'user_taggedartists.dat',
-                'tags': 'tags.dat'
+                'user_artists': 'user_artists.dat',  # user listening data
+                'demographics': 'user_profiles.tsv',  # user demographic information
+                'artists': 'artists.dat',  # artist information
+                'user_tags': 'user_taggedartists.dat',  # user tagging data
+                'tags': 'tags.dat'  # tag definitions
             }
-            # Load each file
+            # loads each file
             data = {}
             for key, filename in files.items():
                 filepath = os.path.join(self.raw_dir, filename)
                 
-                # Handle different file formats
-                sep = '\t' if filename.endswith(('.dat', '.tsv')) else ','
+                sep = '\t' if filename.endswith(('.dat', '.tsv')) else ',' # handles different file formats
                 
                 if not os.path.exists(filepath):
                     raise FileNotFoundError(f"Required file not found: {filepath}")
@@ -118,25 +86,19 @@ class DataLoader:
             raise
     
     def __str__(self) -> str:
-        """String representation of DataLoader."""
+        """String representation"""
         return f"DataLoader(raw_dir='{self.raw_dir}')"
     
     def __repr__(self) -> str:
-        """Official string representation of DataLoader."""
         return f"DataLoader(raw_dir='{self.raw_dir}', url='{self.url}')"
         
 def validate_dataframes(*dfs: pd.DataFrame) -> bool:
-    """
-    Validate that dataframes are not empty.
-    Args:
-        *dfs: Variable number of DataFrames to validate
-    Returns:
-        bool: True if all dataframes are valid, False otherwise
-    """
-    return all(not df.empty for df in dfs)
+    """ Validates dataframes are not empty """
+
+    return all(not df.empty for df in dfs)  # returns True if all dataframes are valid, False otherwise
 
 if __name__ == "__main__":
-    # Example usage
+    # example
     loader = DataLoader()
     loader.download_dataset()
     loader.extract_dataset()
