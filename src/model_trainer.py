@@ -52,7 +52,7 @@ class ModelTrainer:
              batch_size: int = 128,  # batch size for training
              model_save_path: str = 'models/multilabel_model.h5',  # path to save best model
              random_state: int = 42) -> Dict:  # random seed for reproducibility
-    """ Trains the model with train/validation/test split """
+        """ Trains the model with train/validation/test split """
                  
         if self.model is None:
             raise ValueError("Model not built. Call build_model() first.")
