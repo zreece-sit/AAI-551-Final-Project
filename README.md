@@ -28,18 +28,6 @@ This project predicts a user's music genre preferences based on demographic info
 - **main.ipynb**: Jupyter notebook that orchestrates the entire pipeline
 
 ## How to Use
-
-### Installation
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/music-preference-predictor.git
-cd music-preference-predictor
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### Running the Program
 1. Open `main.ipynb` in Jupyter Notebook or Google Colab
 2. Run all cells in order
 3. The program will:
