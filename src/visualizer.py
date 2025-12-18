@@ -4,6 +4,7 @@ visualizer.py - Visualization module
 
 import matplotlib.pyplot as plt
 from typing import Dict, Tuple
+import tensorflow as tf
 
 class Visualizer:
     """
