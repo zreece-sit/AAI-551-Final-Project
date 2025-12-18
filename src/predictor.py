@@ -1,6 +1,4 @@
-"""
-predictor.py - Prediction module for new users
-"""
+""" predictor.py - Prediction module for new users """
 
 import os
 import numpy as np
@@ -11,36 +9,18 @@ from typing import Dict, List, Tuple
 
 
 class MusicPredictor:
-    """
-    Makes genre predictions for new users based on demographics.
-    
-    Uses composition with loaded model and preprocessing artifacts.
-    
-    Attributes:
-        model: Trained Keras model
-        scaler: Fitted StandardScaler
-        mlb: Fitted MultiLabelBinarizer
-        col_info: Dictionary with column information
-    """
+    """ Makes genre predictions for new users based on demographics.    
+    Uses composition with loaded model and preprocessing artifacts. """
     
     def __init__(self, model_path: str, artifacts_dir: str = 'artifacts'):
-        """
-        Initialize predictor with saved model and artifacts.
-        
-        Args:
-            model_path: Path to saved Keras model
-            artifacts_dir: Directory containing preprocessing artifacts
-            
-        Raises:
-            FileNotFoundError: If required files don't exist
-        """
-        # Load model
-        if not os.path.exists(model_path):
+        """ Initialize predictor with saved model and artifacts """
+       
+        if not os.path.exists(model_path):  # loads model
             raise FileNotFoundError(f"Model not found: {model_path}")
         
         self.model = tf.keras.models.load_model(model_path)
         
-        # Load preprocessing artifacts
+        # loads preprocessing artifacts
         try:
             self.scaler = joblib.load(os.path.join(artifacts_dir, 'scaler.joblib'))
             self.mlb = joblib.load(os.path.join(artifacts_dir, 'mlb.joblib'))
@@ -58,33 +38,22 @@ class MusicPredictor:
         print(f"Predicts {len(self.genre_classes)} genres")
     
     def _preprocess_user(self, user_dict: Dict) -> np.ndarray:
-        """
-        Preprocess user data to match training format.
+        """ Preprocesses user data to match training format """
         
-        Args:
-            user_dict: Dictionary with user demographics
-            
-        Returns:
-            Preprocessed feature array
-        """
-        # Create DataFrame from user dict
-        user_df = pd.DataFrame([user_dict])
+        user_df = pd.DataFrame([user_dict])  # creates DataFrame from user dict
         
-        # Process numeric features
+        # processes numeric features
         if self.num_cols:
             X_num = user_df[self.num_cols].fillna(0)
-            X_num_scaled = pd.DataFrame(
-                self.scaler.transform(X_num),
-                columns=X_num.columns
-            )
+            X_num_scaled = pd.DataFrame(self.scaler.transform(X_num), columns=X_num.columns)
         else:
             X_num_scaled = pd.DataFrame()
         
-        # Process categorical features
+        # processes categorical features
         if self.cat_cols:
             X_cat = pd.get_dummies(user_df[self.cat_cols].astype(str))
             
-            # Align with training columns
+            # aligns with training columns
             cat_aligned = pd.DataFrame(0, index=[0], columns=self.X_cat_columns)
             for col in X_cat.columns:
                 if col in cat_aligned.columns:
@@ -92,87 +61,50 @@ class MusicPredictor:
         else:
             cat_aligned = pd.DataFrame()
         
-        # Combine features
-        X_final = pd.concat(
-            [X_num_scaled.reset_index(drop=True), 
-             cat_aligned.reset_index(drop=True)],
-            axis=1
-        ).values.astype(np.float32)
+        # combines features
+        X_final = pd.concat([X_num_scaled.reset_index(drop=True), cat_aligned.reset_index(drop=True)], axis=1).values.astype(np.float32)
         
         return X_final
     
-    def predict(self, user_dict: Dict, top_k: int = 5, 
-               threshold: float = 0.5) -> List[Tuple[str, float]]:
-        """
-        Predict top-K genres for a new user.
+    def predict(self, user_dict: Dict, top_k: int = 5, threshold: float = 0.5) -> List[Tuple[str, float]]:
+        """ Predicts top-K genres for a new user """
         
-        Args:
-            user_dict: User demographics {'age': 25, 'gender': 'm', ...}
-            top_k: Number of top genres to return
-            threshold: Minimum probability threshold
-            
-        Returns:
-            List of (genre, probability) tuples
-        """
-        # Preprocess user data
-        X = self._preprocess_user(user_dict)
+        X = self._preprocess_user(user_dict)  # preprocesses user data
+        probs = self.model.predict(X, verbose=0)[0]  # gets predictions
+        top_idx = np.argsort(probs)[-top_k:][::-1]  # gets top-k indices
         
-        # Get predictions
-        probs = self.model.predict(X, verbose=0)[0]
-        
-        # Get top-k indices
-        top_idx = np.argsort(probs)[-top_k:][::-1]
-        
-        # Filter by threshold using list comprehension
+        # filters by threshold using list comprehension
         predictions = [
             (self.genre_classes[i], float(probs[i]))
             for i in top_idx if probs[i] >= threshold
         ]
         
-        # If no predictions above threshold, return top-k anyway
+        # If no predictions above threshold --> return top-k anyway
         if not predictions:
             predictions = [
                 (self.genre_classes[i], float(probs[i]))
                 for i in top_idx
             ]
         
-        return predictions
+        return predictions  # returns list of (genre, probability) tuples
     
     def predict_all_probs(self, user_dict: Dict) -> Dict[str, float]:
-        """
-        Get probabilities for all genres.
-        
-        Args:
-            user_dict: User demographics
-            
-        Returns:
-            Dictionary mapping genre to probability
-        """
+        """ Gets probabilities for all genres """
         X = self._preprocess_user(user_dict)
         probs = self.model.predict(X, verbose=0)[0]
         
-        # Use zip to combine genres with probabilities
-        return dict(zip(self.genre_classes, map(float, probs)))
+        return dict(zip(self.genre_classes, map(float, probs)))  # uses zip to combine genres with probabilities
     
     @classmethod
     def load_model(cls, model_path: str, artifacts_dir: str = 'artifacts'):
-        """
-        Class method to load a predictor.
+        """ Class method to load a predictor """
         
-        Args:
-            model_path: Path to model file
-            artifacts_dir: Path to artifacts directory
-            
-        Returns:
-            Initialized MusicPredictor instance
-        """
-        return cls(model_path, artifacts_dir)
+        return cls(model_path, artifacts_dir)  # Initialized MusicPredictor instance
     
     def __str__(self) -> str:
         """String representation."""
         return f"MusicPredictor(genres={len(self.genre_classes)})"
     
     def __repr__(self) -> str:
-        """Official string representation."""
         return (f"MusicPredictor(num_genres={len(self.genre_classes)}, "
                 f"num_features={self.model.input_shape[1]})")
