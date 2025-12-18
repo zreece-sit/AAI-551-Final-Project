@@ -145,7 +145,7 @@ class ModelTrainer:
             validation_data=(X_val, y_val),
             epochs=epochs,
             batch_size=batch_size,
-            callbacks=[early_stop, model_checkpoint],
+            callbacks=[model_checkpoint],
             verbose=2
         )
         
