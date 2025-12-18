@@ -88,7 +88,7 @@ predictions = predictor.predict(new_user, top_k=5)
 ### Part 2 Requirements (4+ of 8)
 - Lambda functions & filter
 - List comprehension
-- Built-in modules (os, urllib)
+- Built-in modules (pandas, numpy)
 - Mutable/immutable objects
 - Operator overloading (__str__, __repr__)
 - Generator expressions
