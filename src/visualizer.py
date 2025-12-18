@@ -13,7 +13,7 @@ class Visualizer:
         predictor: MusicPredictor instance for making predictions
     """
     
-    def __init__(self, predictor: MusicPredictor):
+    def __init__(self, predictor: 'MusicPredictor'):
         """
         Initialize Visualizer with a predictor.
         
