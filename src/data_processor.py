@@ -2,7 +2,7 @@ import pandas as pd
 from typing import Dict, Tuple
 
 
-class DataProc:
+class DataProcessor:
     """
     Processes raw Last.fm dataset into cleaned and structured DataFrames.
     """
