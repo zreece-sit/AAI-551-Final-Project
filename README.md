@@ -24,6 +24,53 @@ This project predicts a user's music genre preferences based on demographic info
 4. **predictor.py**: `MusicPredictor` class - Makes predictions for new users
 5. **visualizer.py**: `Visualizer` class - Creates charts and visualizations
 
+```
+AAI-551-Final-Project/
+│
+├── src/ # Source code directory
+│ ├── init.py # Package initialization
+│ ├── data_loader.py # Data downloading and loading utilities
+│ ├── data_processor.py # Feature engineering and data processing
+│ ├── model_trainer.py # Neural network model training
+│ ├── predictor.py # Prediction interface and model serving
+│ └── visualizer.py # Visualization and plotting utilities
+│
+├── data/ # Data storage
+│ ├── raw/ # Original downloaded data files
+│ │ ├── user_artists.dat # User-artist listening counts
+│ │ ├── user_profiles.dat # User demographic information
+│ │ ├── artists.dat # Artist metadata
+│ │ ├── user_taggedartists.dat # User-applied artist tags
+│ │ └── tags.dat # Tag definitions
+│ │
+│ └── processed/ # Processed datasets
+│ ├── features.npy # Preprocessed feature matrix
+│ ├── labels.npy # Genre label matrix
+│ └── genre_classes.npy # Genre class names
+│
+├── models/ # Trained model storage
+│ ├── multilabel_model.h5 # Primary trained model
+│ └── best_enhanced_model.h5 # Enhanced model with callbacks
+│
+├── artifacts/ # Model artifacts and encoders
+│ ├── scaler.pkl # Feature scaler
+│ ├── label_encoder.pkl # Label encoder
+│ ├── feature_columns.pkl # Feature column names
+│ └── genre_classes.pkl # Genre class mapping
+│
+├── notebooks/ # Jupyter notebooks
+│ └── main.ipynb # Main pipeline notebook
+│
+├── logs/ # Training logs
+│ └── enhanced_model/ # TensorBoard logs
+│
+├── main.py # Command-line interface
+├── get_data.py # Data download script
+├── requirements.txt # Python dependencies
+├── config.yaml # Configuration file
+└── README.md # This file
+```
+
 ### Main Notebook
 - **main.ipynb**: Jupyter notebook that orchestrates the entire pipeline
 
